@@ -11,6 +11,7 @@ import (
 	"os"
 	"strings"
 	"sub/model"
+	"sub/services"
 	"time"
 
 	"github.com/projectdiscovery/subfinder/v2/pkg/runner"
@@ -67,8 +68,8 @@ func main() {
 		json.Unmarshal([]byte(data), &metadata)
 		metadata.Source = *key
 		if scan_active_domain(metadata.Host) {
-			// services.Els(metadata)
-			fmt.Println(metadata)
+			services.Els(metadata)
+			// fmt.Println(metadata)
 		}
 		// fmt.Println(metadata.Host, metadata.Source)
 	}
