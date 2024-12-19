@@ -4,12 +4,14 @@ import (
 	"bytes"
 	"encoding/json"
 	"flag"
+	"fmt"
 	"io"
 	"log"
+	"net"
 	"os"
 	"strings"
 	"sub/model"
-	"sub/services"
+	"time"
 
 	"github.com/projectdiscovery/subfinder/v2/pkg/runner"
 )
@@ -64,9 +66,23 @@ func main() {
 	for _, data := range prefix {
 		json.Unmarshal([]byte(data), &metadata)
 		metadata.Source = *key
-		services.Els(metadata)
+		if scan_active_domain(metadata.Host) {
+			// services.Els(metadata)
+			fmt.Println(metadata)
+		}
 		// fmt.Println(metadata.Host, metadata.Source)
 	}
 
 	// print the output
+}
+
+func scan_active_domain(domain string) bool {
+	//
+	timeout := 5 * time.Second
+	_, err := net.DialTimeout("tcp", fmt.Sprintf("%s:%s", domain, "80"), timeout)
+	if err != nil {
+		log.Println("Site unreachable, error: ", err)
+		return false
+	}
+	return true
 }
